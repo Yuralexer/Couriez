@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.OnboardingActivity">
+
+  <androidx.viewpager2.widget.ViewPager2
+      android:id="@+id/viewPagerOnboarding"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/tabLayoutOnboarding"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent" />
+
+  <com.google.android.material.tabs.TabLayout
+      android:id="@+id/tabLayoutOnboarding"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:tabBackground="@drawable/tab_selector"
+      app:tabGravity="center"
+      app:tabIndicatorHeight="0dp"
+      app:layout_constraintBottom_toTopOf="@id/navigationLayoutOnboarding"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"/>
+
+  <LinearLayout
+      android:id="@+id/navigationLayoutOnboarding"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:padding="16dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent">
+
+    <Button
+        android:id="@+id/btnBackOnboarding"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Назад"
+        android:layout_marginEnd="8dp"/>
+
+    <Button
+        android:id="@+id/btnNextOnboarding"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Далее"
+        android:layout_marginStart="8dp"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/citySelectionLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="24dp"
+      android:visibility="gone"
+      android:gravity="center"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Выберите ваш город"
+        android:textSize="18sp"
+        android:layout_marginBottom="16dp"/>
+
+    <Spinner
+        android:id="@+id/spinnerCity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnFinishCitySelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Готово"/>
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,23 +13,22 @@
         android:theme="@style/Theme.Couriez"
         tools:targetApi="31">
         <activity
-            android:name=".SettingsActivity.SettingsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_settings" />
-        <activity
-            android:name=".NewOrderActive.NewOrderActivity"
+            android:name=".activity.RegistrationActivity"
             android:exported="false" />
         <activity
-            android:name=".SignUpActivity.SignUpActivity"
+            android:name=".activity.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".SignInActivity.SignInActivity"
+            android:name=".activity.NewOrderActivity"
             android:exported="false" />
         <activity
-            android:name=".OnboardActivity.OnboardActivity"
+            android:name=".activity.OrderDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity.MainActivity"
+            android:name=".activity.OnboardingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

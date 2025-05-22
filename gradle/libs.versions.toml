@@ -10,14 +10,20 @@ constraintlayout = "2.2.1"
 preference = "1.2.0"
 
 [libraries]
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
+appcompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
+material = { module = "com.google.android.material:material", version = "1.9.0" }
+activity = { module = "androidx.activity:activity", version = "1.7.0" }
+constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version = "2.1.4" }
+preference = { module = "androidx.preference:preference", version = "1.2.0" }
+junit = { module = "junit:junit", version = "4.13.2" }
+ext_junit = { module = "androidx.test.ext:junit", version = "1.1.5" }
+espresso_core = { module = "androidx.test.espresso:espresso-core", version = "3.5.1" }
+viewpager2 = { module = "androidx.viewpager2:viewpager2", version = "1.0.0" }
+lifecycle_viewmodel_ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version = "2.7.0" }
+lifecycle_livedata_ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version = "2.7.0" }
+room_runtime = { module = "androidx.room:room-runtime", version = "2.6.1" }
+room_compiler = { module = "androidx.room:room-compiler", version = "2.6.1" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

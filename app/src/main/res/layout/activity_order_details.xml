@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.OrderDetailsActivity">
+
+    <!-- ActionBar (Toolbar) -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_order_details"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:titleTextColor="@android:color/white"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvDetailOrderTime"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="@style/OrderDetailText"
+                android:text="Время заказа:"/>
+            <TextView
+                android:id="@+id/tvDetailDeliveryMethod"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="@style/OrderDetailText"
+                android:text="Как доставить:"/>
+            <TextView
+                android:id="@+id/tvDetailWeight"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="@style/OrderDetailText"
+                android:text="Вес:"/>
+            <TextView
+                android:id="@+id/tvDetailDimensions"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="@style/OrderDetailText"
+                android:text="Размеры:"/>
+            <TextView
+                android:id="@+id/tvDetailAddressFrom"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="@style/OrderDetailText"
+                android:text="Откуда:"/>
+            <TextView
+                android:id="@+id/tvDetailAddressTo"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="@style/OrderDetailText"
+                android:text="Куда:"/>
+            <TextView
+                android:id="@+id/tvDetailItemDesc"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="@style/OrderDetailText"
+                android:text="Что везем:"/>
+            <TextView
+                android:id="@+id/tvDetailItemValue"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="@style/OrderDetailText"
+                android:text="Ценность:"/>
+            <TextView
+                android:id="@+id/tvDetailContactPhone"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="@style/OrderDetailText"
+                android:text="Ваш телефон:"/>
+            <TextView
+                android:id="@+id/tvDetailTotalCost"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                style="@style/OrderDetailTotal"
+                android:layout_marginBottom="16dp"
+                android:text="Итоговая стоимость:"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
