@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".activity.LoginActivity"
     android:fitsSystemWindows="true"
-    android:padding="24dp">
+    android:layout_margin="24dp">
 
     <TextView
         android:id="@+id/tvLoginTitle"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="48dp"/>
+        android:layout_marginTop="32dp"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilLoginContact"
@@ -74,7 +74,6 @@
         style="?attr/materialButtonOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:text="Назад"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

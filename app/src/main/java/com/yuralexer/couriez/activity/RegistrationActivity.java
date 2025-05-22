@@ -6,6 +6,7 @@ import android.util.Pair;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,7 +33,7 @@ import java.util.List;
 public class RegistrationActivity extends AppCompatActivity {
 
     private ViewPager2 viewPager;
-    private TabLayout tabLayout;
+    private ProgressBar progressBarRegistration;
     private Button btnBackRegistration;
     private Button btnNextRegistration;
     private AppDatabase db;
@@ -51,7 +52,7 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         viewPager = findViewById(R.id.viewPagerRegistration);
-        tabLayout = findViewById(R.id.tabLayoutRegistration);
+        progressBarRegistration = findViewById(R.id.progressBarRegistration);
         btnBackRegistration = findViewById(R.id.btnBackRegistration);
         btnNextRegistration = findViewById(R.id.btnNextRegistration);
         db = AppDatabase.getDatabase(this);
@@ -65,18 +66,11 @@ public class RegistrationActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
         viewPager.setUserInputEnabled(false);
 
-        new TabLayoutMediator(tabLayout, viewPager,
-                new TabLayoutMediator.TabConfigurationStrategy() {
-                    @Override
-                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-
-                    }
-                }).attach();
-
         viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
+                progressBarRegistration.setProgress(position);
                 updateNavigationButtons(position);
             }
         });
