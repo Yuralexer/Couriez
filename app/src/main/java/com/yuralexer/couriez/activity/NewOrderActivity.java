@@ -14,12 +14,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.yuralexer.couriez.R;
 import com.yuralexer.couriez.db.AppDatabase;
 import com.yuralexer.couriez.db.entity.Order;
+import com.yuralexer.couriez.db.vm.OrderViewModel;
 import com.yuralexer.couriez.util.SharedPreferencesHelper;
 import com.google.android.material.textfield.TextInputLayout;
 import java.util.Calendar;
 import java.util.Locale;
 import java.text.SimpleDateFormat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.view.MenuItem;
 
 public class NewOrderActivity extends AppCompatActivity {
@@ -32,9 +35,9 @@ public class NewOrderActivity extends AppCompatActivity {
     private TextInputLayout tilWeight;
 
     private Calendar scheduledCalendar;
-    private AppDatabase db;
     private SharedPreferencesHelper prefsHelper;
     private String currentDeliveryMethod = "foot";
+    private OrderViewModel  orderViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +53,7 @@ public class NewOrderActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Новый заказ");
         }
 
-        db = AppDatabase.getDatabase(this);
+        orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
         prefsHelper = new SharedPreferencesHelper(this);
 
         if (getSupportActionBar() != null) {
@@ -60,7 +63,7 @@ public class NewOrderActivity extends AppCompatActivity {
 
         initViews();
         setupListeners();
-        updateTotalCost();
+        updateTotalCost(500);
     }
 
     private void initViews() {
@@ -98,9 +101,18 @@ public class NewOrderActivity extends AppCompatActivity {
         btnScheduleDate.setOnClickListener(v -> showDatePicker());
 
         rgDeliveryMethod.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.rbFoot) currentDeliveryMethod = "foot";
-            else if (checkedId == R.id.rbCar) currentDeliveryMethod = "car";
-            else if (checkedId == R.id.rbTruck) currentDeliveryMethod = "truck";
+            if (checkedId == R.id.rbFoot) {
+                currentDeliveryMethod = "foot";
+                updateTotalCost(500.00);
+            }
+            else if (checkedId == R.id.rbCar) {
+                currentDeliveryMethod = "car";
+                updateTotalCost(1000.00);
+            }
+            else if (checkedId == R.id.rbTruck) {
+                currentDeliveryMethod = "car";
+                updateTotalCost(10000.00);
+            };
             validateWeight();
         });
 
@@ -159,8 +171,7 @@ public class NewOrderActivity extends AppCompatActivity {
         datePickerDialog.show();
     }
 
-    private void updateTotalCost() {
-        double mockCost = 500.0;
+    private void updateTotalCost(double mockCost) {
         tvTotalCost.setText(String.format(Locale.getDefault(), "Итого: %.2f руб.", mockCost));
     }
 
@@ -200,9 +211,7 @@ public class NewOrderActivity extends AppCompatActivity {
 
 
     private void submitOrder() {
-        if (!validateInputs()) {
-            return;
-        }
+        if (!validateInputs()) return;
 
         long userId = prefsHelper.getLoggedInUserId();
 
@@ -213,34 +222,31 @@ public class NewOrderActivity extends AppCompatActivity {
             scheduledDateTimeStr = sdf.format(scheduledCalendar.getTime());
         }
 
-        String deliveryMethod = "foot";
         int deliveryCheckedId = rgDeliveryMethod.getCheckedRadioButtonId();
-        if (deliveryCheckedId == R.id.rbCar) deliveryMethod = "car";
-        else if (deliveryCheckedId == R.id.rbTruck) deliveryMethod = "truck";
+        String deliveryMethod = (deliveryCheckedId == R.id.rbCar) ? "car"
+                : (deliveryCheckedId == R.id.rbTruck) ? "truck"
+                : "foot";
 
         double weight = Double.parseDouble(etWeight.getText().toString());
         String addressFrom = etAddressFrom.getText().toString().trim();
         String addressTo = etAddressTo.getText().toString().trim();
         String itemDesc = etItemDescription.getText().toString().trim();
-        double itemValue = 0;
-        if (!etItemValue.getText().toString().isEmpty()) {
-            itemValue = Double.parseDouble(etItemValue.getText().toString());
-        }
+        double itemValue = etItemValue.getText().toString().isEmpty() ? 0
+                : Double.parseDouble(etItemValue.getText().toString());
         String contactPhone = etContactPhone.getText().toString().trim();
         String dimensions = etDimensions.getText().toString().trim();
-        double totalCost = 500.0;
+        double totalCost = (deliveryCheckedId == R.id.rbCar) ? 1000.00
+                : (deliveryCheckedId == R.id.rbTruck) ? 10000.00
+                : 500.00;
 
-        final Order newOrder = new Order(userId, orderTimeType, scheduledDateTimeStr, deliveryMethod,
+        Order newOrder = new Order(userId, orderTimeType, scheduledDateTimeStr, deliveryMethod,
                 weight, addressFrom, addressTo, itemDesc, itemValue,
                 contactPhone, totalCost, dimensions);
 
-        new Thread(() -> {
-            db.orderDao().insert(newOrder);
-            runOnUiThread(() -> {
-                Toast.makeText(NewOrderActivity.this, "Заказ создан!", Toast.LENGTH_SHORT).show();
-                finish();
-            });
-        }).start();
+        orderViewModel.insertOrder(newOrder, () -> runOnUiThread(() -> {
+            Toast.makeText(NewOrderActivity.this, "Заказ создан!", Toast.LENGTH_SHORT).show();
+            finish();
+        }));
     }
 
     @Override

@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new OrdersFragment();
             } else if (itemId == R.id.nav_new_order) {
                 startActivity(new Intent(MainActivity.this, NewOrderActivity.class));
-                return false; // Не меняем фрагмент, т.к. открываем Activity
+                return false;
             } else if (itemId == R.id.nav_chat) {
                 selectedFragment = new ChatFragment();
             } else if (itemId == R.id.nav_account) {

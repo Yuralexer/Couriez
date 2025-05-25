@@ -9,12 +9,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.yuralexer.couriez.R;
 import com.yuralexer.couriez.activity.OrderDetailsActivity;
 import com.yuralexer.couriez.adapter.OrdersAdapter;
 import com.yuralexer.couriez.db.AppDatabase;
+import com.yuralexer.couriez.db.vm.OrderViewModel;
 import com.yuralexer.couriez.util.SharedPreferencesHelper;
 import java.util.ArrayList;
 
@@ -23,8 +25,8 @@ public class OrdersFragment extends Fragment {
     private RecyclerView recyclerViewOrders;
     private OrdersAdapter ordersAdapter;
     private TextView tvNoOrders;
-    private AppDatabase db;
     private SharedPreferencesHelper prefsHelper;
+    private  OrderViewModel orderViewModel;
 
     @Nullable
     @Override
@@ -35,7 +37,7 @@ public class OrdersFragment extends Fragment {
         tvNoOrders = view.findViewById(R.id.tvNoOrders);
         recyclerViewOrders.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        db = AppDatabase.getDatabase(getContext());
+        orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
         prefsHelper = new SharedPreferencesHelper(getContext());
 
         ordersAdapter = new OrdersAdapter(new ArrayList<>(), order -> {
@@ -58,7 +60,8 @@ public class OrdersFragment extends Fragment {
             recyclerViewOrders.setVisibility(View.GONE);
             return;
         }
-        db.orderDao().getOrdersByUserId(userId).observe(getViewLifecycleOwner(), orders -> {
+
+        orderViewModel.getOrdersByUserId(userId).observe(getViewLifecycleOwner(), orders -> {
             if (orders == null || orders.isEmpty()) {
                 tvNoOrders.setText("У вас пока нет заказов");
                 tvNoOrders.setVisibility(View.VISIBLE);
@@ -70,6 +73,7 @@ public class OrdersFragment extends Fragment {
             }
         });
     }
+
 
     @Override
     public void onResume() {

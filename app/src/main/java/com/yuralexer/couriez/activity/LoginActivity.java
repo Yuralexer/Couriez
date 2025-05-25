@@ -9,12 +9,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.yuralexer.couriez.R;
 import com.google.android.material.textfield.TextInputEditText;
+import com.yuralexer.couriez.db.vm.UserViewModel;
 import com.yuralexer.couriez.util.SharedPreferencesHelper;
 import com.yuralexer.couriez.db.entity.User;
-import com.yuralexer.couriez.db.AppDatabase;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -25,19 +28,22 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnBack;
 
     private SharedPreferencesHelper prefshelper;
-    private AppDatabase db;
+    private UserViewModel userViewModel;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mAuth = FirebaseAuth.getInstance();
+
         etLoginContact = findViewById(R.id.etLoginContact);
         etLoginPassword = findViewById(R.id.etLoginPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnBack = findViewById(R.id.btnBack);
         prefshelper = new SharedPreferencesHelper(this);
-        db = AppDatabase.getDatabase(this);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Вход в аккаунт");
@@ -59,6 +65,15 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            finish();
+        }
+    }
+
     private void performLogin() {
         String contact = etLoginContact.getText().toString().trim();
         String password = etLoginPassword.getText().toString();
@@ -68,18 +83,18 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        User user = db.userDao().login(contact, password);
-
-        if (user != null) {
-            prefshelper.setLoggedInUserId(user.id);
-            Toast.makeText(this, "Вход выполнен успешно!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-        } else {
-            Toast.makeText(this, "Неверные данные для входа. Проверьте логин и пароль.", Toast.LENGTH_LONG).show();
-        }
+        userViewModel.login(contact, password, user -> {
+            if (user != null) {
+                prefshelper.setLoggedInUserId(user.getId());
+                Toast.makeText(this, "Добро пожаловать, " + user.getName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(this, "Неверный логин или пароль", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

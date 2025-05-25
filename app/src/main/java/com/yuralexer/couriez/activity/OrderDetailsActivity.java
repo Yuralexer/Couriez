@@ -7,7 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.yuralexer.couriez.R;
 import com.yuralexer.couriez.db.AppDatabase;
 import com.yuralexer.couriez.db.entity.Order;
+import com.yuralexer.couriez.db.vm.OrderViewModel;
+
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.view.MenuItem;
 
 import java.util.Locale;
@@ -16,12 +20,12 @@ public class OrderDetailsActivity extends AppCompatActivity {
 
     public static final String EXTRA_ORDER_ID = "extra_order_id";
     private long orderId;
+    private OrderViewModel orderViewModel;
 
     private TextView tvOrderTime, tvDeliveryMethod, tvWeight,
             tvAddressFrom, tvAddressTo, tvItemDesc, tvItemValue,
             tvContactPhone, tvTotalCost, tvDimensions;
 
-    private AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +48,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Заказ №" + orderId);
         }
 
-        db = AppDatabase.getDatabase(this);
+        orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
         initViews();
         loadOrderDetails();
     }
@@ -63,7 +67,7 @@ public class OrderDetailsActivity extends AppCompatActivity {
     }
 
     private void loadOrderDetails() {
-        db.orderDao().getOrderById(orderId).observe(this, order -> {
+        orderViewModel.getOrderById(orderId).observe(this, order -> {
             if (order != null) {
                 populateViews(order);
             } else {

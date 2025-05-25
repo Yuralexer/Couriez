@@ -16,10 +16,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.yuralexer.couriez.R;
 import com.yuralexer.couriez.activity.LoginActivity;
 import com.yuralexer.couriez.activity.RegistrationActivity;
-import com.yuralexer.couriez.db.AppDatabase;
+import com.yuralexer.couriez.db.vm.UserViewModel;
 import com.yuralexer.couriez.util.SharedPreferencesHelper;
 
 public class AccountFragment extends Fragment {
@@ -30,7 +32,7 @@ public class AccountFragment extends Fragment {
     private Spinner regionSpinner;
 
     private SharedPreferencesHelper prefsHelper;
-    private AppDatabase db;
+    private UserViewModel userViewModel;
     private long currentUserId = -1;
 
     @Nullable
@@ -39,7 +41,7 @@ public class AccountFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
         prefsHelper = new SharedPreferencesHelper(getContext());
-        db = AppDatabase.getDatabase(getContext());
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);;
 
         tvUserNameOrCompany = view.findViewById(R.id.tvUserNameOrCompany);
         tvUserIdentifier = view.findViewById(R.id.tvUserIdentifier);
@@ -75,7 +77,7 @@ public class AccountFragment extends Fragment {
             authButtonsLayout.setVisibility(View.GONE);
             userInfoLayout.setVisibility(View.VISIBLE);
             btnLogout.setVisibility(View.VISIBLE);
-            db.userDao().getUserById(currentUserId).observe(getViewLifecycleOwner(), user -> {
+            userViewModel.getUserById(currentUserId).observe(getViewLifecycleOwner(), user -> {
                 if (user != null) {
                     tvUserNameOrCompany.setText(user.nameOrCompany);
                     tvUserIdentifier.setText(user.identifier);

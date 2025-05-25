@@ -27,4 +27,9 @@ public class User {
         this.password = password;
         this.nameOrCompany = nameOrCompany;
     }
+
+    public String getName() { return this.nameOrCompany; }
+
+    public long getId() { return this.id; }
+
 }

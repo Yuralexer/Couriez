@@ -14,18 +14,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.yuralexer.couriez.R;
+import com.yuralexer.couriez.db.vm.UserViewModel;
 import com.yuralexer.couriez.fragments.auth.AccountTypeSelectionFragment;
 import com.yuralexer.couriez.fragments.auth.ContactInfoFragment;
 import com.yuralexer.couriez.fragments.auth.NameInputFragment;
 import com.yuralexer.couriez.fragments.auth.PasswordSetupFragment;
-import com.yuralexer.couriez.db.entity.User;
-import com.yuralexer.couriez.db.AppDatabase;
+import com.yuralexer.couriez.util.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +35,14 @@ public class RegistrationActivity extends AppCompatActivity {
     private ProgressBar progressBarRegistration;
     private Button btnBackRegistration;
     private Button btnNextRegistration;
-    private AppDatabase db;
+    private UserViewModel userViewModel;
 
     private String accountType;
     private String userNameOrOrgName;
     private String contactType;
     private String contactValue;
     private String passwordValue;
+    private SharedPreferencesHelper prefshelper;
 
     private RegistrationPagerAdapter pagerAdapter;
 
@@ -55,7 +55,8 @@ public class RegistrationActivity extends AppCompatActivity {
         progressBarRegistration = findViewById(R.id.progressBarRegistration);
         btnBackRegistration = findViewById(R.id.btnBackRegistration);
         btnNextRegistration = findViewById(R.id.btnNextRegistration);
-        db = AppDatabase.getDatabase(this);
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        prefshelper = new SharedPreferencesHelper(this);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Регистрация");
@@ -162,20 +163,32 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     private void performRegistration() {
+        userViewModel.register(accountType, contactValue, passwordValue, userNameOrOrgName, success -> {
+            if (success) {
+                loginAfterRegistration(contactValue, passwordValue);
+            } else {
+                Toast.makeText(this, "Ошибка! Такой пользователь уже существует", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
-        if (db.userDao().findByIdentifier(contactValue) != null) {
-            Toast.makeText(this, "Ошибка! такой пользователь уже существует", Toast.LENGTH_LONG).show();
-            return;
-        }
-        User user = new User(accountType, contactValue, passwordValue, userNameOrOrgName);
-        db.userDao().insert(user);
-
-        Toast.makeText(this, "Регистрация успешна!", Toast.LENGTH_LONG).show();
-
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
+    private void loginAfterRegistration(String contactValue, String passwordValue) {
+        userViewModel.login(contactValue, passwordValue, user -> {
+            if (user != null) {
+                prefshelper.setLoggedInUserId(user.getId());
+                Toast.makeText(this, "Добро пожаловать, " + user.getName(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(this, "Регистрация успешна!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
     @Override

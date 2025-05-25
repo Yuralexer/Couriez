@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "639087203483",
+    "project_id": "couriez-f1cba",
+    "storage_bucket": "couriez-f1cba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639087203483:android:dd4c02976953ed24cee23e",
+        "android_client_info": {
+          "package_name": "com.yuralexer.couriez"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPDtUkvr2qcGoMcUJt9fplw0aHBTVHLk8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
