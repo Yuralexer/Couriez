@@ -12,10 +12,12 @@ import androidx.lifecycle.LiveData;
 import com.yuralexer.couriez.db.AppDatabase;
 import com.yuralexer.couriez.db.entity.User;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class UserViewModel extends AndroidViewModel {
     private final AppDatabase db;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public UserViewModel(@NonNull Application application) {
         super(application);
@@ -25,7 +27,7 @@ public class UserViewModel extends AndroidViewModel {
         return db.userDao().getUserById(userId);
     }
     public void insert(User user, Consumer<Long> callback) {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executor.execute(() -> {
             long id = db.userDao().insert(user);
             if (callback != null) {
                 new Handler(Looper.getMainLooper()).post(() -> callback.accept(id));
@@ -33,13 +35,13 @@ public class UserViewModel extends AndroidViewModel {
         });
     }
     public void login(String identifier, String password, Consumer<User> callback) {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executor.execute(() -> {
             User user = db.userDao().login(identifier, password);
             new Handler(Looper.getMainLooper()).post(() -> callback.accept(user));
         });
     }
     public void register(String accountType, String contactValue, String passwordValue, String userNameOrOrgName, Consumer<Boolean> callback) {
-        Executors.newSingleThreadExecutor().execute(() -> {
+        executor.execute(() -> {
             User existingUser = db.userDao().findByIdentifier(contactValue);
             if (existingUser != null) {
                 new Handler(Looper.getMainLooper()).post(() -> callback.accept(false));

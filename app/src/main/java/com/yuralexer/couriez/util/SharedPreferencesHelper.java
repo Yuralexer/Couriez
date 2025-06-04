@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SharedPreferencesHelper {
-    private static final String PREF_NAME = "KuryezPrefs";
+    private static final String PREF_NAME = "CouriezPrefs";
     private static final String KEY_IS_FIRST_LAUNCH = "isFirstLaunch";
     private static final String KEY_SELECTED_CITY = "selectedCity";
     private static final String KEY_LOGGED_IN_USER_ID = "loggedInUserId";
